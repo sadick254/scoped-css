@@ -2,6 +2,7 @@ var pseudoSelectorRegex = /((,\s*)?(\s?(::?|>\s?|~\s?|\+\s?)(\w|-|\.|#|\*|\[([^(
 var atRuleRegex = /@.*\{\W+([:;#%\/\.\(\)\+,\s\w"'-]|(::?|>.*)\w+\s\{\W+[:;#%\/\\\.\(\)\+,\s\w"'-]+\})+\}/gm;
 var globalRuleRegex = /[a-z\*,\s]+\s\{\W+[:;#%\/\\\.\(\)\+,\s\w"'-]+\}/gm;
 var bodyRuleRegex = /\{\W+[:;#%\/\\\.\(\)\+,\s\w"'-]+\}/gm;
+var testClassNamesIDCount = 0;
 
 export function mainRule(styles, classID) {
   return "." + classID + "{" + styles.replace(atRuleRegex, "").replace(pseudoSelectorRegex, "") + "}";
@@ -77,3 +78,11 @@ export function insertStyleAndSetclassIDs(classID, rule, rulesForComponent, clas
     }
   }
 };
+
+export function isTestEnvironment() {
+  return process && process.env.NODE_ENV === "test";
+}
+
+export function generateIDForTests() {
+  return testClassNamesIDCount++;
+}

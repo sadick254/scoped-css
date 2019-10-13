@@ -1,4 +1,13 @@
-import { mainRule, pseudoSelectorRules, atRules, globalRules, generateID, insertStyleAndSetclassIDs } from "./utils";
+import {
+  mainRule,
+  pseudoSelectorRules,
+  atRules,
+  globalRules,
+  generateID,
+  generateIDForTests,
+  insertStyleAndSetclassIDs,
+  isTestEnvironment
+} from "./utils";
 
 var sheet = (typeof document === 'undefined')
   ? ({ insertRule: function () { } })
@@ -16,7 +25,7 @@ function scoped(h, cb) {
       fns.shift();
       var rulesForComponent = {};
       return function (props, children) {
-        var classID = generateID();
+        var classID = scoped.generateID();
         rulesForComponent[classID] = [];
         var classIDs = [];
         children = Array.isArray(children) ? children : props.children;
@@ -54,7 +63,7 @@ function scoped(h, cb) {
     for (var i = 0; i < tags.length; i++) {
       styles += tags[i] + (args[i] || "");
     }
-    var name = generateID();
+    var name = scoped.generateID();
     cb("@keyframes " + name + " { " + styles + " }");
     return name;
   };
@@ -72,6 +81,10 @@ function scoped(h, cb) {
   };
   return styled;
 }
+
+scoped.generateID = isTestEnvironment()
+  ? generateIDForTests
+  : generateID;
 
 scoped.defaultCallback = defaultcb;
 
