@@ -9,22 +9,23 @@ import {
   isTestEnvironment
 } from "./utils";
 
-var sheet = (typeof document === 'undefined')
-  ? ({ insertRule: function () { } })
-  : document.head.appendChild(document.createElement("style")).sheet;
+var sheet =
+  typeof document === "undefined"
+    ? { insertRule: function() {} }
+    : document.head.appendChild(document.createElement("style")).sheet;
 
 function defaultcb(css) {
-  sheet.insertRule(css, sheet.cssRules.length);
+  sheet.insertRule(css, sheet.cssRules ? sheet.cssRules.length : 0);
 }
 
 function scoped(h, cb) {
   cb = cb || defaultcb;
   function styled(elem) {
-    return function (tags) {
+    return function(tags) {
       var fns = [].slice.call(arguments);
       fns.shift();
       var rulesForComponent = {};
-      return function (props, children) {
+      return function(props, children) {
         var classID = scoped.generateID();
         rulesForComponent[classID] = [];
         var classIDs = [];
@@ -33,20 +34,39 @@ function scoped(h, cb) {
         for (var index = 0; index < tags.length; index++) {
           styles += tags[index] + (fns[index] ? fns[index](props) : "");
         }
-        insertStyleAndSetclassIDs(classID, mainRule(styles, classID), rulesForComponent, classIDs, cb);
+        insertStyleAndSetclassIDs(
+          classID,
+          mainRule(styles, classID),
+          rulesForComponent,
+          classIDs,
+          cb
+        );
         var rulesPseudoSelector = pseudoSelectorRules(styles, classID);
         for (var index = 0; index < rulesPseudoSelector.length; index++) {
-          insertStyleAndSetclassIDs(classID, rulesPseudoSelector[index], rulesForComponent, classIDs, cb);
+          insertStyleAndSetclassIDs(
+            classID,
+            rulesPseudoSelector[index],
+            rulesForComponent,
+            classIDs,
+            cb
+          );
         }
         var rulesAt = atRules(styles, classID);
         for (var index = 0; index < rulesAt.length; index++) {
-          insertStyleAndSetclassIDs(classID, rulesAt[index], rulesForComponent, classIDs, cb);
+          insertStyleAndSetclassIDs(
+            classID,
+            rulesAt[index],
+            rulesForComponent,
+            classIDs,
+            cb
+          );
         }
         if (rulesForComponent[classID].length === 0) {
           delete rulesForComponent[classID];
         }
         var attr = Object.assign({}, props);
-        attr.class = classIDs.join(" ") + " " + (props.class || props.className || "");
+        attr.class =
+          classIDs.join(" ") + " " + (props.class || props.className || "");
         if (h.name === "createElementWithValidation") {
           attr.className = attr.class;
           delete attr.class;
@@ -56,7 +76,7 @@ function scoped(h, cb) {
       };
     };
   }
-  styled.keyframes = function (tags) {
+  styled.keyframes = function(tags) {
     var args = [].slice.call(arguments);
     args.shift();
     var styles = "";
@@ -67,7 +87,7 @@ function scoped(h, cb) {
     cb("@keyframes " + name + " { " + styles + " }");
     return name;
   };
-  styled.global = function (tags) {
+  styled.global = function(tags) {
     var args = [].slice.call(arguments);
     args.shift();
     var styles = "";
@@ -82,9 +102,7 @@ function scoped(h, cb) {
   return styled;
 }
 
-scoped.generateID = isTestEnvironment()
-  ? generateIDForTests
-  : generateID;
+scoped.generateID = isTestEnvironment() ? generateIDForTests : generateID;
 
 scoped.defaultCallback = defaultcb;
 
