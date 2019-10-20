@@ -6,13 +6,13 @@ import {
   generateID,
   generateIDForTests,
   insertStyleAndSetclassIDs,
-  isTestEnvironment
-} from "./utils";
+  isTestEnvironment,
+} from './utils';
 
 var sheet =
-  typeof document === "undefined"
+  typeof document === 'undefined'
     ? { insertRule: function() {} }
-    : document.head.appendChild(document.createElement("style")).sheet;
+    : document.head.appendChild(document.createElement('style')).sheet;
 
 function defaultcb(css) {
   sheet.insertRule(css, sheet.cssRules ? sheet.cssRules.length : 0);
@@ -30,9 +30,9 @@ function scoped(h, cb) {
         rulesForComponent[classID] = [];
         var classIDs = [];
         children = Array.isArray(children) ? children : props.children;
-        var styles = "";
+        var styles = '';
         for (var index = 0; index < tags.length; index++) {
-          styles += tags[index] + (fns[index] ? fns[index](props) : "");
+          styles += tags[index] + (fns[index] ? fns[index](props) : '');
         }
         insertStyleAndSetclassIDs(
           classID,
@@ -53,21 +53,14 @@ function scoped(h, cb) {
         }
         var rulesAt = atRules(styles, classID);
         for (var index = 0; index < rulesAt.length; index++) {
-          insertStyleAndSetclassIDs(
-            classID,
-            rulesAt[index],
-            rulesForComponent,
-            classIDs,
-            cb
-          );
+          insertStyleAndSetclassIDs(classID, rulesAt[index], rulesForComponent, classIDs, cb);
         }
         if (rulesForComponent[classID].length === 0) {
           delete rulesForComponent[classID];
         }
         var attr = Object.assign({}, props);
-        attr.class =
-          classIDs.join(" ") + " " + (props.class || props.className || "");
-        if (h.name === "createElementWithValidation") {
+        attr.class = classIDs.join(' ') + ' ' + (props.class || props.className || '');
+        if (h.name === 'createElementWithValidation') {
           attr.className = attr.class;
           delete attr.class;
           return h(elem, attr, children);
@@ -79,20 +72,20 @@ function scoped(h, cb) {
   styled.keyframes = function(tags) {
     var args = [].slice.call(arguments);
     args.shift();
-    var styles = "";
+    var styles = '';
     for (var i = 0; i < tags.length; i++) {
-      styles += tags[i] + (args[i] || "");
+      styles += tags[i] + (args[i] || '');
     }
     var name = scoped.generateID();
-    cb("@keyframes " + name + " { " + styles + " }");
+    cb('@keyframes ' + name + ' { ' + styles + ' }');
     return name;
   };
   styled.global = function(tags) {
     var args = [].slice.call(arguments);
     args.shift();
-    var styles = "";
+    var styles = '';
     for (var i = 0; i < tags.length; i++) {
-      styles += tags[i] + (args[i] || "");
+      styles += tags[i] + (args[i] || '');
     }
     var matches = globalRules(styles);
     for (var j = 0; j < matches.length; j++) {

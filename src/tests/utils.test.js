@@ -1,4 +1,4 @@
-import test from "ava";
+import test from 'ava';
 import {
   mainRule,
   pseudoSelectorRules,
@@ -6,34 +6,30 @@ import {
   globalRules,
   generateID,
   isTestEnvironment,
-  generateIDForTests
-} from "../utils";
+  generateIDForTests,
+} from '../utils';
 
 function assertStyle(t, expected, result) {
-  t.is(expected.replace(/[\r\n\s]/gm, ""), result.replace(/[\r\n\s]/gm, ""));
+  t.is(expected.replace(/[\r\n\s]/gm, ''), result.replace(/[\r\n\s]/gm, ''));
 }
 
 test("isTestEnvironment returns TRUE when process.env.NODE_ENV is equal to 'test'", t => {
-  process.env.NODE_ENV = "test";
+  process.env.NODE_ENV = 'test';
   t.is(isTestEnvironment(), true);
 });
 
 test("isTestEnvironment returns FALSE when process.env.NODE_ENV is not equal to 'test'", t => {
-  process.env.NODE_ENV = "development";
+  process.env.NODE_ENV = 'development';
   t.is(isTestEnvironment(), false);
 });
 
-test("generateIDForTests returns incremental, predictable classNames", t => {
-  const [first, second, third] = [
-    generateIDForTests(),
-    generateIDForTests(),
-    generateIDForTests()
-  ];
+test('generateIDForTests returns incremental, predictable classNames', t => {
+  const [first, second, third] = [generateIDForTests(), generateIDForTests(), generateIDForTests()];
 
-  t.deepEqual([first, second, third], ["c0", "c1", "c2"]);
+  t.deepEqual([first, second, third], ['c0', 'c1', 'c2']);
 });
 
-test("generateID can handle 6000 DOM nodes", t => {
+test('generateID can handle 6000 DOM nodes', t => {
   const nbDomNodes = 6000;
   const nbTimes = 100;
   t.plan(nbTimes);
@@ -47,11 +43,11 @@ test("generateID can handle 6000 DOM nodes", t => {
     });
 });
 
-test("extract main rules from main rules only", t => {
+test('extract main rules from main rules only', t => {
   const scopedcss = `
     width: 100%;
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = mainRule(scopedcss, className);
   const expected = `
     .i1 {
@@ -61,7 +57,7 @@ test("extract main rules from main rules only", t => {
   assertStyle(t, expected, result);
 });
 
-test("extract main rules from full rules", t => {
+test('extract main rules from full rules', t => {
   const scopedcss = `
     width: 100%;
     color: green;
@@ -93,7 +89,7 @@ test("extract main rules from full rules", t => {
       }
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = mainRule(scopedcss, className);
   const expected = `
     .i1 {
@@ -104,23 +100,23 @@ test("extract main rules from full rules", t => {
   assertStyle(t, expected, result);
 });
 
-test("extract pseudo selector rules from pseudo selector rules only", t => {
+test('extract pseudo selector rules from pseudo selector rules only', t => {
   const scopedcss = `
     :hover {
       width: 80%;
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = pseudoSelectorRules(scopedcss, className);
   const expected = `
     .i1:hover {
       width: 80%;
     }
   `;
-  assertStyle(t, expected, result.join(""));
+  assertStyle(t, expected, result.join(''));
 });
 
-test("extract pseudo selector rules rules from full rules", t => {
+test('extract pseudo selector rules rules from full rules', t => {
   const scopedcss = `
     width: 100%;
     :hover {
@@ -133,17 +129,17 @@ test("extract pseudo selector rules rules from full rules", t => {
       }
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = pseudoSelectorRules(scopedcss, className);
   const expected = `
     .i1:hover {
       width: 80%;
     }
   `;
-  assertStyle(t, expected, result.join(""));
+  assertStyle(t, expected, result.join(''));
 });
 
-test("extract at rules from at rules only", t => {
+test('extract at rules from at rules only', t => {
   const scopedcss = `
     @media screen and (max-width: 992px) {
       width: 60%;
@@ -152,7 +148,7 @@ test("extract at rules from at rules only", t => {
       }
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = atRules(scopedcss, className);
   const expected = `
     @media screen and (max-width: 992px) {
@@ -164,10 +160,10 @@ test("extract at rules from at rules only", t => {
       }
     }
   `;
-  assertStyle(t, expected, result.join(""));
+  assertStyle(t, expected, result.join(''));
 });
 
-test("extract at rules rules from full rules", t => {
+test('extract at rules rules from full rules', t => {
   const scopedcss = `
     width: 100%;
     :hover {
@@ -180,7 +176,7 @@ test("extract at rules rules from full rules", t => {
       }
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = atRules(scopedcss, className);
   const expected = `
     @media screen and (max-width: 992px) {
@@ -192,17 +188,17 @@ test("extract at rules rules from full rules", t => {
       }
     }
   `;
-  assertStyle(t, expected, result.join(""));
+  assertStyle(t, expected, result.join(''));
 });
 
-test("0 global rules equals array of lenth 0", t => {
+test('0 global rules equals array of lenth 0', t => {
   const globalcss = ``;
   const result = globalRules(globalcss);
   const expectedLength = 0;
   t.is(result.length, expectedLength);
 });
 
-test("3 global rules equals array of lenth 3", t => {
+test('3 global rules equals array of lenth 3', t => {
   const globalcss = `
     * {
       margin: 0;
@@ -227,46 +223,46 @@ test("3 global rules equals array of lenth 3", t => {
   t.is(result.length, expectedLength);
 });
 
-test("extract pseudo selector rules where pseudo selector has dash (-webkit-slider-thumb for example)", t => {
+test('extract pseudo selector rules where pseudo selector has dash (-webkit-slider-thumb for example)', t => {
   const scopedcss = `
     ::-webkit-slider-thumb {
       color: blue;
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = pseudoSelectorRules(scopedcss, className);
   const expected = `
     .i1::-webkit-slider-thumb {
       color: blue;
     }
   `;
-  assertStyle(t, expected, result.join(""));
+  assertStyle(t, expected, result.join(''));
 });
 
-test("extract pseudo selector rules where pseudo selector is a function", t => {
+test('extract pseudo selector rules where pseudo selector is a function', t => {
   const scopedcss = `
     :nth-child(4n) {
       color: lime;
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = pseudoSelectorRules(scopedcss, className);
   const expected = `
     .i1:nth-child(4n) {
       color: lime;
     }
   `;
-  assertStyle(t, expected, result.join(""));
+  assertStyle(t, expected, result.join(''));
 });
 
-test("multiple comma separated values and whitespace for selector", t => {
+test('multiple comma separated values and whitespace for selector', t => {
   const scopedcss = `
     :hover,:focus,
     :active {
       color: red;
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = pseudoSelectorRules(scopedcss, className);
   const expected = `
     .i1:hover {
@@ -279,82 +275,82 @@ test("multiple comma separated values and whitespace for selector", t => {
       color: red;
     }
   `;
-  assertStyle(t, expected, result.join(""));
+  assertStyle(t, expected, result.join(''));
 });
 
 // https://developer.mozilla.org/en-US/docs/Web/CSS/Type_selectors
-test("Type selectors in combinator", t => {
+test('Type selectors in combinator', t => {
   const scopedcss = `
     > div {
       color: lime;
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = pseudoSelectorRules(scopedcss, className);
   const expected = `
     .i1 > div {
       color: lime;
     }
   `;
-  assertStyle(t, expected, result.join(""));
+  assertStyle(t, expected, result.join(''));
 });
 
 /**
  * Selectors
  */
 // https://developer.mozilla.org/en-US/docs/Web/CSS/Class_selectors
-test("Class selectors in combinator", t => {
+test('Class selectors in combinator', t => {
   const scopedcss = `
     > .content {
       color: lime;
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = pseudoSelectorRules(scopedcss, className);
   const expected = `
     .i1 > .content {
       color: lime;
     }
   `;
-  assertStyle(t, expected, result.join(""));
+  assertStyle(t, expected, result.join(''));
 });
 
 // https://developer.mozilla.org/en-US/docs/Web/CSS/ID_selectors
-test("ID selectors in combinator", t => {
+test('ID selectors in combinator', t => {
   const scopedcss = `
     > #main-button {
       color: lime;
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = pseudoSelectorRules(scopedcss, className);
   const expected = `
     .i1 > #main-button {
       color: lime;
     }
   `;
-  assertStyle(t, expected, result.join(""));
+  assertStyle(t, expected, result.join(''));
 });
 
 // https://developer.mozilla.org/en-US/docs/Web/CSS/Universal_selectors
-test("Universal selectors in combinator", t => {
+test('Universal selectors in combinator', t => {
   const scopedcss = `
     > * {
       color: lime;
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = pseudoSelectorRules(scopedcss, className);
   const expected = `
     .i1 > * {
       color: lime;
     }
   `;
-  assertStyle(t, expected, result.join(""));
+  assertStyle(t, expected, result.join(''));
 });
 
 // https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors
-test("Attribute selectors in combinator", t => {
+test('Attribute selectors in combinator', t => {
   const scopedcss = `
     /* <a> elements with a title attribute */
     > a[title] {
@@ -381,7 +377,7 @@ test("Attribute selectors in combinator", t => {
       padding: 2px;
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = pseudoSelectorRules(scopedcss, className);
   const expected = `
     .i1 > a[title] {
@@ -404,64 +400,64 @@ test("Attribute selectors in combinator", t => {
       padding: 2px;
     }
   `;
-  assertStyle(t, expected, result.join(""));
+  assertStyle(t, expected, result.join(''));
 });
 
 /**
  * Combinators
  */
 // https://developer.mozilla.org/en-US/docs/Web/CSS/Adjacent_sibling_combinator
-test("Adjacent sibling combinator", t => {
+test('Adjacent sibling combinator', t => {
   const scopedcss = `
     + div {
       color: lime;
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = pseudoSelectorRules(scopedcss, className);
   const expected = `
     .i1 + div {
       color: lime;
     }
   `;
-  assertStyle(t, expected, result.join(""));
+  assertStyle(t, expected, result.join(''));
 });
 
 // https://developer.mozilla.org/en-US/docs/Web/CSS/General_sibling_combinator
-test("General sibling combinator", t => {
+test('General sibling combinator', t => {
   const scopedcss = `
     ~ div {
       color: lime;
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = pseudoSelectorRules(scopedcss, className);
   const expected = `
     .i1 ~ div {
       color: lime;
     }
   `;
-  assertStyle(t, expected, result.join(""));
+  assertStyle(t, expected, result.join(''));
 });
 
 // https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator
-test("Child combinator", t => {
+test('Child combinator', t => {
   const scopedcss = `
     > div {
       color: lime;
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = pseudoSelectorRules(scopedcss, className);
   const expected = `
     .i1 > div {
       color: lime;
     }
   `;
-  assertStyle(t, expected, result.join(""));
+  assertStyle(t, expected, result.join(''));
 });
 
-test("checkbox or radio button", t => {
+test('checkbox or radio button', t => {
   t.plan(2);
   const scopedcss = `
     position: relative;
@@ -541,7 +537,7 @@ test("checkbox or radio button", t => {
       background: white;
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = mainRule(scopedcss, className);
   const expected = `
     .i1 {
@@ -626,18 +622,14 @@ test("checkbox or radio button", t => {
       background: white;
     }
   `;
-  assertStyle(
-    t,
-    pseudoSelectorRulesExpected,
-    pseudoSelectorRulesResult.join("")
-  );
+  assertStyle(t, pseudoSelectorRulesExpected, pseudoSelectorRulesResult.join(''));
 });
 
 /**
  * css property values tests
  * https://developer.mozilla.org/en-US/docs/Web/CSS/Value_definition_syntax
  */
-test("css property value : keywords > one word (here: inherit)", t => {
+test('css property value : keywords > one word (here: inherit)', t => {
   t.plan(3);
   const scopedcss = `
     width: inherit;
@@ -651,7 +643,7 @@ test("css property value : keywords > one word (here: inherit)", t => {
       }
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = mainRule(scopedcss, className);
   const expected = `
     .i1 {
@@ -665,11 +657,7 @@ test("css property value : keywords > one word (here: inherit)", t => {
       width: inherit;
     }
   `;
-  assertStyle(
-    t,
-    pseudoSelectorRulesExpected,
-    pseudoSelectorRulesResult.join("")
-  );
+  assertStyle(t, pseudoSelectorRulesExpected, pseudoSelectorRulesResult.join(''));
   const atRulesResult = atRules(scopedcss, className);
   const atRulesExpected = `
     @media screen and (max-width: 992px) {
@@ -681,7 +669,7 @@ test("css property value : keywords > one word (here: inherit)", t => {
       }
     }
   `;
-  assertStyle(t, atRulesExpected, atRulesResult.join(""));
+  assertStyle(t, atRulesExpected, atRulesResult.join(''));
 });
 
 test('css property value : keywords > words with "-" (here: ease-in)', t => {
@@ -698,7 +686,7 @@ test('css property value : keywords > words with "-" (here: ease-in)', t => {
       }
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = mainRule(scopedcss, className);
   const expected = `
     .i1 {
@@ -712,11 +700,7 @@ test('css property value : keywords > words with "-" (here: ease-in)', t => {
       transition-timing-function: ease-in;
     }
   `;
-  assertStyle(
-    t,
-    pseudoSelectorRulesExpected,
-    pseudoSelectorRulesResult.join("")
-  );
+  assertStyle(t, pseudoSelectorRulesExpected, pseudoSelectorRulesResult.join(''));
   const atRulesResult = atRules(scopedcss, className);
   const atRulesExpected = `
     @media screen and (max-width: 992px) {
@@ -728,7 +712,7 @@ test('css property value : keywords > words with "-" (here: ease-in)', t => {
       }
     }
   `;
-  assertStyle(t, atRulesExpected, atRulesResult.join(""));
+  assertStyle(t, atRulesExpected, atRulesResult.join(''));
 });
 
 test('css property value : literals > "/"', t => {
@@ -745,7 +729,7 @@ test('css property value : literals > "/"', t => {
       }
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = mainRule(scopedcss, className);
   const expected = `
     .i1 {
@@ -759,11 +743,7 @@ test('css property value : literals > "/"', t => {
       font: 12px/18px;
     }
   `;
-  assertStyle(
-    t,
-    pseudoSelectorRulesExpected,
-    pseudoSelectorRulesResult.join("")
-  );
+  assertStyle(t, pseudoSelectorRulesExpected, pseudoSelectorRulesResult.join(''));
   const atRulesResult = atRules(scopedcss, className);
   const atRulesExpected = `
     @media screen and (max-width: 992px) {
@@ -775,10 +755,10 @@ test('css property value : literals > "/"', t => {
       }
     }
   `;
-  assertStyle(t, atRulesExpected, atRulesResult.join(""));
+  assertStyle(t, atRulesExpected, atRulesResult.join(''));
 });
 
-test("css property value : functions call", t => {
+test('css property value : functions call', t => {
   t.plan(3);
   const scopedcss = `
     color: rgb(20, 20, 20);
@@ -792,7 +772,7 @@ test("css property value : functions call", t => {
       }
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = mainRule(scopedcss, className);
   const expected = `
     .i1 {
@@ -806,11 +786,7 @@ test("css property value : functions call", t => {
       color: rgb(20, 20, 20);
     }
   `;
-  assertStyle(
-    t,
-    pseudoSelectorRulesExpected,
-    pseudoSelectorRulesResult.join("")
-  );
+  assertStyle(t, pseudoSelectorRulesExpected, pseudoSelectorRulesResult.join(''));
   const atRulesResult = atRules(scopedcss, className);
   const atRulesExpected = `
     @media screen and (max-width: 992px) {
@@ -822,7 +798,7 @@ test("css property value : functions call", t => {
       }
     }
   `;
-  assertStyle(t, atRulesExpected, atRulesResult.join(""));
+  assertStyle(t, atRulesExpected, atRulesResult.join(''));
 });
 
 test('css property value : data types > ","', t => {
@@ -839,7 +815,7 @@ test('css property value : data types > ","', t => {
       }
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = mainRule(scopedcss, className);
   const expected = `
     .i1 {
@@ -853,11 +829,7 @@ test('css property value : data types > ","', t => {
       color: rgb(20, 20, 20);
     }
   `;
-  assertStyle(
-    t,
-    pseudoSelectorRulesExpected,
-    pseudoSelectorRulesResult.join("")
-  );
+  assertStyle(t, pseudoSelectorRulesExpected, pseudoSelectorRulesResult.join(''));
   const atRulesResult = atRules(scopedcss, className);
   const atRulesExpected = `
     @media screen and (max-width: 992px) {
@@ -869,10 +841,10 @@ test('css property value : data types > ","', t => {
       }
     }
   `;
-  assertStyle(t, atRulesExpected, atRulesResult.join(""));
+  assertStyle(t, atRulesExpected, atRulesResult.join(''));
 });
 
-test("css property value : numbers with decimal point", t => {
+test('css property value : numbers with decimal point', t => {
   t.plan(3);
   const scopedcss = `
     font-size: 1.2rem;
@@ -886,7 +858,7 @@ test("css property value : numbers with decimal point", t => {
       }
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = mainRule(scopedcss, className);
   const expected = `
     .i1 {
@@ -900,11 +872,7 @@ test("css property value : numbers with decimal point", t => {
       font-size: 1.2rem;
     }
   `;
-  assertStyle(
-    t,
-    pseudoSelectorRulesExpected,
-    pseudoSelectorRulesResult.join("")
-  );
+  assertStyle(t, pseudoSelectorRulesExpected, pseudoSelectorRulesResult.join(''));
   const atRulesResult = atRules(scopedcss, className);
   const atRulesExpected = `
     @media screen and (max-width: 992px) {
@@ -916,10 +884,10 @@ test("css property value : numbers with decimal point", t => {
       }
     }
   `;
-  assertStyle(t, atRulesExpected, atRulesResult.join(""));
+  assertStyle(t, atRulesExpected, atRulesResult.join(''));
 });
 
-test("css property value : negative numbers", t => {
+test('css property value : negative numbers', t => {
   t.plan(3);
   const scopedcss = `
     top: -12px;
@@ -933,7 +901,7 @@ test("css property value : negative numbers", t => {
       }
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = mainRule(scopedcss, className);
   const expected = `
     .i1 {
@@ -947,11 +915,7 @@ test("css property value : negative numbers", t => {
       top: -12px;
     }
   `;
-  assertStyle(
-    t,
-    pseudoSelectorRulesExpected,
-    pseudoSelectorRulesResult.join("")
-  );
+  assertStyle(t, pseudoSelectorRulesExpected, pseudoSelectorRulesResult.join(''));
   const atRulesResult = atRules(scopedcss, className);
   const atRulesExpected = `
     @media screen and (max-width: 992px) {
@@ -963,10 +927,10 @@ test("css property value : negative numbers", t => {
       }
     }
   `;
-  assertStyle(t, atRulesExpected, atRulesResult.join(""));
+  assertStyle(t, atRulesExpected, atRulesResult.join(''));
 });
 
-test("css property value : explicitly positive numbers", t => {
+test('css property value : explicitly positive numbers', t => {
   t.plan(3);
   const scopedcss = `
     top: +12px;
@@ -980,7 +944,7 @@ test("css property value : explicitly positive numbers", t => {
       }
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = mainRule(scopedcss, className);
   const expected = `
     .i1 {
@@ -994,11 +958,7 @@ test("css property value : explicitly positive numbers", t => {
       top: +12px;
     }
   `;
-  assertStyle(
-    t,
-    pseudoSelectorRulesExpected,
-    pseudoSelectorRulesResult.join("")
-  );
+  assertStyle(t, pseudoSelectorRulesExpected, pseudoSelectorRulesResult.join(''));
   const atRulesResult = atRules(scopedcss, className);
   const atRulesExpected = `
     @media screen and (max-width: 992px) {
@@ -1010,21 +970,21 @@ test("css property value : explicitly positive numbers", t => {
       }
     }
   `;
-  assertStyle(t, atRulesExpected, atRulesResult.join(""));
+  assertStyle(t, atRulesExpected, atRulesResult.join(''));
 });
 
-test("css property value : special characters in content property", t => {
+test('css property value : special characters in content property', t => {
   const scopedcss = `
     ::before {
       content: "\\25C0";
     }
   `;
-  const className = "i1";
+  const className = 'i1';
   const result = pseudoSelectorRules(scopedcss, className);
   const expected = `
     .i1::before {
       content: "\\25C0";
     }
   `;
-  assertStyle(t, expected, result.join(""));
+  assertStyle(t, expected, result.join(''));
 });
