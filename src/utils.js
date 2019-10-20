@@ -105,13 +105,13 @@ export function insertStyleAndSetclassIDs(
 }
 
 export function isTestEnvironment() {
-  console.log(
-    "isTestEnvironment: ",
-    process && process.env.NODE_ENV === "test"
-  );
-  return process && process.env.NODE_ENV === "test";
+  if (process !== undefined) {
+    return process.env.NODE_ENV === "test";
+  } else {
+    return false;
+  }
 }
 
 export function generateIDForTests() {
-  return `t${testClassNamesIDCount++}`;
+  return `c${testClassNamesIDCount++}`;
 }
