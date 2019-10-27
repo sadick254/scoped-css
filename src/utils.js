@@ -96,5 +96,5 @@ export function isTestEnvironment() {
 }
 
 export function generateIDForTests() {
-  return `c${testClassNamesIDCount++}`;
+  return 'c' + testClassNamesIDCount++;
 }
