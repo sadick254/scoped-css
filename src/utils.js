@@ -88,7 +88,7 @@ export function insertStyleAndSetclassIDs(classID, rule, rulesForComponent, clas
 }
 
 export function isTestEnvironment() {
-  if (process !== undefined) {
+  if (typeof process !== 'undefined') {
     return process.env.NODE_ENV === 'test';
   } else {
     return false;
